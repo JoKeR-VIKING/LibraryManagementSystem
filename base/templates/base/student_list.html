@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/student_list.css' %}">
+</head>
+<body>
+    <form action="studentlogin" method="post">
+        <input class="reg_no" type="number" name="reg_no" placeholder="Enter reg_no" required>
+        <input type="password" name="password" placeholder="Enter password" minlength="8" maxlength="15" required>
+        <input type="submit" value="Login">
+        {% csrf_token %}
+    </form>
+</body>
+</html>

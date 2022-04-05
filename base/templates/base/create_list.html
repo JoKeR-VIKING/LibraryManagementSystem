@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Librarian Login</title>
+</head>
+<body>
+    <form action="studententer" method="POST">
+        <input type="text" name="name" placeholder="Enter name" required>
+
+        <select name="year" required>
+            <option disabled hidden selected>Select Year</option>
+            <option value="1">FE</option>
+            <option value="2">SE</option>
+            <option value="3">TE</option>
+            <option value="4">BE</option>
+        </select>
+
+        <select name="division" required>
+            <option disabled hidden selected>Select Division</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+        </select>
+
+        <input type="text" name="roll_no" placeholder="Enter roll no" required>
+
+        <input type="text" name="reg_no" placeholder="Enter registration no" required>
+
+        <input type="submit" value="Create">
+        {% csrf_token %}
+    </form>
+
+    <form action="studentremove" method="POST">
+        <input type="text" name="reg_no" placeholder="Enter registration no" required>
+
+        <input type="submit" value="Remove">
+        {% csrf_token %}
+    </form>
+
+    <form action="bookenter" method="POST">
+        <input type="text" name="book_id" placeholder="Enter book id" required>
+
+        <input type="text" name="title" placeholder="Enter book title" required>
+
+        <input type="text" name="author" placeholder="Enter author" required>
+
+        <input type="text" name="category" placeholder="Enter category" required>
+
+        <input type="submit" value="Add Book">
+        {% csrf_token %}
+    </form>
+
+    <form action="bookremove" method="POST">
+        <input type="text" name="book_id" placeholder="Enter book id" required>
+
+        <input type="submit" value="Remove book">
+        {% csrf_token %}
+    </form>
+</body>
+</html>

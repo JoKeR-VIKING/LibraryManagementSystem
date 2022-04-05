@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Librarian Login | SAKEC Library</title>
+</head>
+<body>
+    <form action="librarianlogin" method="post">
+        <input type="text" name="user_id" placeholder="Enter user id" required>
+        <input type="text" name="id_no" minlength="7" maxlength="7" placeholder="Enter your 7 digit id no" required>
+        <input type="submit" value="Login">
+        {% csrf_token %}
+    </form>
+</body>
+</html>
