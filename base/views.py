@@ -1,12 +1,21 @@
 from django.shortcuts import render, redirect
-from .forms import StudentForm, LibrarianForm, StudentRemoveForm, BookForm, BookRemoveForm
+from .forms import StudentLoginForm, StudentForm, LibrarianForm, StudentRemoveForm, BookForm, BookRemoveForm
 from .models import Student, Librarian, Book
 
 def StudentLogin(request):
     if request.method == "POST":
-        form = StudentForm(request.POST)
+        form = StudentLoginForm(request.POST)
+
+        if form.is_valid():
+            if Student.objects.filter(reg_no = form.cleaned_data['reg_no'], password = form.cleaned_data['password']).exists():
+                request.session["student_id"] = form.cleaned_data['reg_no']
+                return redirect('/student')
+            else:
+                print("Student does not exist")
+
+        return redirect('/')
     else:
-        form = StudentForm()
+        form = StudentLoginForm()
 
     return render(request, 'base/student_list.html')
 
@@ -54,8 +63,9 @@ def StudentEnter(request):
                 division = form.cleaned_data['division']
                 roll_no = form.cleaned_data['roll_no']
                 reg_no = form.cleaned_data['reg_no']
+                password = form.cleaned_data['password']
 
-                Student.objects.create(name = name, year = year, division = division, roll_no = roll_no, reg_no = reg_no)
+                Student.objects.create(name = name, year = year, division = division, roll_no = roll_no, reg_no = reg_no, password = password)
             else:
                 print("Record exists")
 
@@ -97,15 +107,21 @@ def BookEnter(request):
                 title = form.cleaned_data['title']
                 author = form.cleaned_data['author']
                 category = form.cleaned_data['category']
+                amount = form.cleaned_data['amount']
 
-                Book.objects.create(book_id = book_id, title = title, author = author, category = category)
+                if amount == "":
+                    amount = 1
+                else:
+                    amount = int(amount)
+
+                Book.objects.create(book_id = book_id, title = title, author = author, category = category, amount = amount)
             else:
                 print("Record exists")
 
         return redirect('/librarian')
     else:
         form = BookForm()
-        return render(request, 'base/create_list.html')
+        return render(request, 'base/create_book.html')
 
 def BookRemove(request):
     if "user_id" not in request.session:
@@ -125,4 +141,17 @@ def BookRemove(request):
         return redirect('/librarian')
     else:
         form = BookForm()
-        return render(request, 'base/create_list.html')
+        return render(request, 'base/create_book.html')
+
+def StudentPage(request):
+    if "student_id" not in request.session:
+        return redirect('/')
+
+    return render(request, 'base/student_page.html')
+
+def StudentLogout(request):
+    if "student_id" not in request.session:
+        return redirect('/student')
+
+    del request.session['student_id']
+    return redirect('/')

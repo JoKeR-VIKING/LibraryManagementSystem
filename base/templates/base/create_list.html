@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Librarian Login</title>
+    <title>Student Add/Remove</title>
 </head>
 <body>
     <form action="studententer" method="POST">
@@ -37,6 +37,8 @@
 
         <input type="text" name="reg_no" placeholder="Enter registration no" required>
 
+        <input type="password" name="password" placeholder="Enter password" required>
+
         <input type="submit" value="Create">
         {% csrf_token %}
     </form>
@@ -45,26 +47,6 @@
         <input type="text" name="reg_no" placeholder="Enter registration no" required>
 
         <input type="submit" value="Remove">
-        {% csrf_token %}
-    </form>
-
-    <form action="bookenter" method="POST">
-        <input type="text" name="book_id" placeholder="Enter book id" required>
-
-        <input type="text" name="title" placeholder="Enter book title" required>
-
-        <input type="text" name="author" placeholder="Enter author" required>
-
-        <input type="text" name="category" placeholder="Enter category" required>
-
-        <input type="submit" value="Add Book">
-        {% csrf_token %}
-    </form>
-
-    <form action="bookremove" method="POST">
-        <input type="text" name="book_id" placeholder="Enter book id" required>
-
-        <input type="submit" value="Remove book">
         {% csrf_token %}
     </form>
 </body>

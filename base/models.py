@@ -6,7 +6,7 @@ class Student(models.Model):
     division = models.CharField(max_length = 100)
     roll_no = models.CharField(max_length = 100)
     reg_no = models.CharField(max_length = 100)
-    password = models.CharField(max_length = 15, blank = True, null = True)
+    password = models.CharField(max_length = 15)
 
 class Librarian(models.Model):
     name = models.CharField(max_length = 100, blank = True, null = True)
@@ -18,3 +18,4 @@ class Book(models.Model):
     title = models.CharField(max_length = 100)
     author = models.CharField(max_length = 100)
     category = models.CharField(max_length = 100)
+    amount = models.IntegerField(default = 1)

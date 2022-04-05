@@ -1,6 +1,11 @@
 from django.forms import ModelForm
 from .models import Student, Librarian, Book
 
+class StudentLoginForm(ModelForm):
+    class Meta:
+        model = Student
+        fields = ['reg_no', 'password']
+
 class StudentForm(ModelForm):
     class Meta:
         model = Student

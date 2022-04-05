@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Add/Remove</title>
+</head>
+<body>
+    <form action="bookenter" method="POST">
+        <input type="text" name="book_id" placeholder="Enter book id" required>
+
+        <input type="text" name="title" placeholder="Enter book title" required>
+
+        <input type="text" name="author" placeholder="Enter author" required>
+
+        <select name="category">
+            <option disabled hidden selected>Select Category</option>
+            <option value="sci-fi">Sci-fi</option>
+            <option value="fiction">Fiction</option>
+            <option value="drama">Drama</option>
+            <option value="mystery">Mystery</option>
+            <option value="romance">Romance</option>
+        </select>
+
+        <input type="number" name="amount" placeholder="Enter number of books" required>
+
+        <input type="submit" value="Add Book">
+        {% csrf_token %}
+    </form>
+
+    <form action="bookremove" method="POST">
+        <input type="text" name="book_id" placeholder="Enter book id" required>
+
+        <input type="submit" value="Remove book">
+        {% csrf_token %}
+    </form>
+</body>
+</html>
