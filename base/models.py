@@ -7,6 +7,8 @@ class Student(models.Model):
     roll_no = models.CharField(max_length = 100)
     reg_no = models.CharField(max_length = 100)
     password = models.CharField(max_length = 15)
+    max_assignable = models.IntegerField(default = 2)
+    assigned_books = models.CharField(max_length = 500, null = True, blank = True)
 
 class Librarian(models.Model):
     name = models.CharField(max_length = 100, blank = True, null = True)
@@ -19,3 +21,7 @@ class Book(models.Model):
     author = models.CharField(max_length = 100)
     category = models.CharField(max_length = 100)
     amount = models.IntegerField(default = 1)
+
+class History(models.Model):
+    reg_no = models.CharField(max_length = 100)
+    history = models.JSONField(default = dict)

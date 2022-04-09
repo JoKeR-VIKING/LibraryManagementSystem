@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
+from django.db.models import F
 from .forms import StudentLoginForm, StudentForm, LibrarianForm, StudentRemoveForm, BookForm, BookRemoveForm
-from .models import Student, Librarian, Book
+from .models import Student, Librarian, Book, History
+import datetime
 
 def StudentLogin(request):
     if request.method == "POST":
@@ -143,11 +145,91 @@ def BookRemove(request):
         form = BookForm()
         return render(request, 'base/create_book.html')
 
+def BookAssign(request):
+    if "student_id" not in request.session:
+        return redirect('/')
+    if "bookname" not in request.POST:
+        return redirect('/student')
+
+    err_message = ''
+
+    if Student.objects.filter(reg_no = request.session['student_id'], max_assignable__gte = 1).exists():
+        assigned_books = Student.objects.filter(reg_no = request.session['student_id']).values('assigned_books')
+        for i in assigned_books:
+            assigned_books = i['assigned_books']
+
+        if assigned_books is None:
+            assigned_books = ""
+
+        Student.objects.filter(reg_no = request.session['student_id']).update(max_assignable = F('max_assignable') - 1,
+                                                                            assigned_books = assigned_books + ";" + request.POST['bookname'])
+        Book.objects.filter(book_id = request.POST['bookname']).update(amount = F('amount') - 1)
+
+        if not History.objects.filter(reg_no = request.session['student_id']).exists():
+            History.objects.create(reg_no = request.session['student_id'])
+
+        newHistory = History.objects.filter(reg_no = request.session['student_id']).values('history')
+        for i in newHistory:
+            newHistory = i['history']
+
+        if request.POST['bookname'] not in newHistory:
+            newHistory[request.POST['bookname']] = ""
+
+        newHistory[request.POST['bookname']] += f'1,{datetime.datetime.now().date()};'
+
+        History.objects.filter(reg_no = request.session['student_id']).update(history = newHistory)
+    else:
+        print("Student with id does not exist or has run out of assign quota")
+
+    return redirect('/student')
+
+def BookReturn(request):
+    if "student_id" not in request.session:
+        return redirect('/')
+    if "bookname" not in request.POST:
+        return redirect('/student')
+
+    assignedBooks = Student.objects.filter(reg_no = request.session['student_id']).values('assigned_books')
+    for i in assignedBooks:
+        assignedBooks = i['assigned_books']
+
+    assignedBooks = assignedBooks.replace(';' + request.POST['bookname'], '', 1)
+
+    Student.objects.filter(reg_no=request.session['student_id']).update(max_assignable = F('max_assignable') + 1,
+                                                                        assigned_books = assignedBooks)
+    Book.objects.filter(book_id = request.POST['bookname']).update(amount = F('amount') + 1)
+
+    if not History.objects.filter(reg_no = request.session['student_id']).exists():
+        History.objects.create(reg_no = request.session['student_id'])
+
+    newHistory = History.objects.filter(reg_no = request.session['student_id']).values('history')
+    for i in newHistory:
+        newHistory = i['history']
+
+    if request.POST['bookname'] not in newHistory:
+        newHistory[request.POST['bookname']] = ""
+
+    newHistory[request.POST['bookname']] += f'0,{datetime.datetime.now().date()};'
+
+    History.objects.filter(reg_no = request.session['student_id']).update(history = newHistory)
+
+    return redirect('/student')
+
 def StudentPage(request):
     if "student_id" not in request.session:
         return redirect('/')
 
-    return render(request, 'base/student_page.html')
+    # selecting books with amount >= 1
+    allbooks = Book.objects.filter(amount__gte = 1)
+    assignedBooks = Student.objects.filter(reg_no = request.session['student_id']).values('assigned_books')
+    for i in assignedBooks:
+        assignedBooks = i['assigned_books']
+
+    if assignedBooks is not None and len(assignedBooks) > 0:
+        assignedBooks = assignedBooks.split(';')
+        assignedBooks = assignedBooks[1:]
+
+    return render(request, 'base/student_page.html', {'allbooks' : allbooks, 'returnBooks' : assignedBooks})
 
 def StudentLogout(request):
     if "student_id" not in request.session:

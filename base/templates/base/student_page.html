@@ -3,12 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <title>Student</title>
+    {% load static %}
 </head>
 <body>
-    <form action="assignbook" method="POST">
+    <input class="bookid" type="text" name="bookid" placeholder="Enter book id">
 
+    <select class="category" name="category">
+        <option disabled hidden selected>Select Category</option>
+        <option value="sci-fi">Sci-fi</option>
+        <option value="fiction">Fiction</option>
+        <option value="drama">Drama</option>
+        <option value="mystery">Mystery</option>
+        <option value="romance">Romance</option>
+    </select>
+
+    <button onclick="filterParse()">Filter</button>
+
+    <form action="assignbook" method="POST">
+        <select class="filtered-menu" name="bookname" required>
+
+        </select>
+
+        <input type="submit" value="Take Book">
+        {% csrf_token %}
+    </form>
+
+    <form action="returnbook" method="POST">
+        <select class="return-menu" name="bookname" required>
+            <option selected disabled hidden>Choose book id to return</option>
+
+            {% for book in returnBooks %}
+                <option value="{{ book }}">{{ book }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="Return Book">
+        {% csrf_token %}
     </form>
 
     <a href="studentlogout">Logout</a>
+    {% csrf_token %}
+
+    <script src="{% static 'js/filter.js' %}"></script>
+
+    <script>
+        if ("{{ message }}" !== "")
+        {
+            alert("{{ message }}");
+        }
+
+        let arr = [];
+        {% for book in allbooks %}
+            arr.push(["{{ book.book_id }}", "{{ book.title }}", "{{ book.category }}"]);
+        {% endfor %}
+
+        filterBooks(arr)
+
+        function filterParse()
+        {
+            filterBooks(arr)
+        }
+    </script>
 </body>
 </html>
