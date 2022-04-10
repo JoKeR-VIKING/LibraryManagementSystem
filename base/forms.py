@@ -10,6 +10,7 @@ class StudentForm(ModelForm):
     class Meta:
         model = Student
         fields = "__all__"
+        exclude = ['max_assignable']
 
 class StudentRemoveForm(ModelForm):
     class Meta:
